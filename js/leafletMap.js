@@ -36,36 +36,42 @@ class LeafletMap {
     vis.stAttr = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
     //this is the base map layer, where we are showing the map background
-    vis.base_layer = L.tileLayer(vis.esriUrl, {
+    /*vis.base_layer = L.tileLayer(vis.esriUrl, {
       id: 'esri-image',
       attribution: vis.esriAttr,
       ext: 'png'
-    });
+    });*/
 
     vis.theMap = L.map('my-map', {
       center: [30, 0],
-      zoom: 2,
-      layers: [vis.base_layer]
+      zoom: 2
+      //layers: [vis.base_layer]
     });
+
+    /*L.tileLayer.provider('Jawg.Streets', {
+      accessToken: 'ZbfatVMXqkwePUctq85uzb20cxPlhBZEVGXBSm8mt2glUIYxtLepu1zsX4RbOAFC'
+    }).addTo(vis.theMap)*/
+    vis.updateVisBackground('Jawg.Streets', 'ZbfatVMXqkwePUctq85uzb20cxPlhBZEVGXBSm8mt2glUIYxtLepu1zsX4RbOAFC', 'year')
+    //vis.updateVisBackground("Basic", vis.esriUrl, vis.esriAttr)
 
     //if you stopped here, you would just have a map
 
     //initialize svg for d3 to add to map
-    L.svg({clickable:true}).addTo(vis.theMap)// we have to make the svg layer clickable
+    /*L.svg({clickable:true}).addTo(vis.theMap)// we have to make the svg layer clickable
     vis.overlay = d3.select(vis.theMap.getPanes().overlayPane)
-    vis.svg = vis.overlay.select('svg').attr("pointer-events", "auto")
+    vis.svg = vis.overlay.select('svg').attr("pointer-events", "auto")*/
 
     /*vis.colorScale = d3.scaleSequential()
       .interpolator(d3.interpolateViridis)
       .domain(d3.extent(vis.data, d=> parseInt(d.year)))
     console.log(d3.extent(vis.data, d=> parseInt(d.year)))*/
     //these are the city locations, displayed as a set of dots 
-    vis.updateVisColor("year")
+    //vis.updateVisColor("year")
     
     //handler here for updating the map, as you zoom in and out           
-    vis.theMap.on("zoomend", function(){
+    /*vis.theMap.on("zoomend", function(){
       vis.updateVis();
-    });
+    });*/
 
   }
 
@@ -90,6 +96,7 @@ class LeafletMap {
       .attr("r", vis.radiusSize) ;
 
   }
+
   updateVisColor(_classification){
     let vis = this;
     console.log(vis.data)
@@ -163,6 +170,27 @@ class LeafletMap {
                            //  vis.newZoom = 18; 
                            // vis.theMap.flyTo([d.latitude, d.longitude], vis.newZoom);
                           });
+  }
+
+  updateVisBackground(_name, _token, _classification){
+    let vis = this
+    vis.theMap.eachLayer(function (layer){
+      vis.theMap.removeLayer(layer)
+    })
+    L.tileLayer.provider(_name, {
+      accessToken: _token
+    }).addTo(vis.theMap)
+
+    L.svg({clickable:true}).addTo(vis.theMap)
+    vis.overlay = d3.select(vis.theMap.getPanes().overlayPane)
+    vis.svg = vis.overlay.select('svg').attr("pointer-events", "auto")
+
+    vis.updateVisColor(_classification)
+    
+    //handler here for updating the map, as you zoom in and out           
+    vis.theMap.on("zoomend", function(){
+      vis.updateVis();
+    });
   }
 
   renderVis() {
