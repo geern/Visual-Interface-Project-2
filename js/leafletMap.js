@@ -99,17 +99,104 @@ class LeafletMap {
 
   updateVisColor(_classification){
     let vis = this;
-    console.log(vis.data)
+
     if(parseInt(vis.data[0][_classification])){
+      var domain = d3.extent(vis.data, d => d[_classification]);
       vis.colorScale = d3.scaleSequential()
-        .interpolator(d3.interpolateViridis)
-        .domain(d3.extent(vis.data, d => d[_classification]));
+        .interpolator(d3.interpolateBlues)
+        .domain(domain);
+
+      d3.select("#mapLegend").selectAll("*").remove()
+
+      var svg = d3.select("#mapLegend").append('svg')
+        .attr('class', 'center-container')
+        .attr('width', '100%')
+        .attr('height', '20vh');
+      var gradient = svg.append('defs').append('linearGradient')
+        .attr("id", "legend-gradient")
+
+      var legend = svg.append('g')
+        .attr('class', 'legend')
+        .attr('transform', `translate(20,20)`);
+
+      var legendRect = legend.append('rect')
+        .attr('width', '95%')
+        .attr('height', 25)
+
+      var legendTitle = legend.append('text')
+        .attr('class', 'legend-title')
+        .attr('dy', '.35em')
+        .attr('y',-10)
+        .text("Color By " + _classification)
+
+      var legendStops = [
+        { color: vis.colorScale(domain[0]), value: domain[0], offset: 0},
+        { color: vis.colorScale(domain[1]), value: domain[1], offset: 100},
+      ];
+
+      
+
+      gradient.selectAll('stop')
+        .data(legendStops)
+        .join('stop')
+        .attr('offset', d => d.offset)
+        .attr('stop-color', d => d.color);
+
+      legendRect.attr('fill', 'url(#legend-gradient)');
+
+      let incrementTicks = []
+      let incrementValue = _classification == "year" ? 5 : 12
+      for(var i = domain[0]; i <= domain[1]; i+=incrementValue){
+        incrementTicks.push({value: i})
+      }
+
+      if(incrementTicks[incrementTicks.length-1].value != domain[1]){
+        incrementTicks.push({value: domain[1]})
+      }
+
+      console.log(incrementTicks)
+
+      legend.selectAll('.legend-label')
+        .data(incrementTicks)
+        .join('text')
+        .attr('class', 'legend-label')
+        .attr('text-anchor', 'middle')
+        .attr('dy', '.35em')
+        .attr('y', 40)
+        .attr('x', (d,index) => {
+          return index == 0 ? 0 : (98/incrementTicks.length)*index + "%";
+        })
+        .text(d => d.value);
     } else {
-      const unique = [...new Set(vis.data.map(item => item[_classification]))];
+      var unique = [...new Set(vis.data.map(item => item[_classification]))];
+      unique.splice(unique.indexOf(""), 1)
+
       vis.colorScale = d3.scaleOrdinal()
         .domain(unique)
         .range(d3.schemeTableau10);
+
+      d3.select("#mapLegend").selectAll("*").remove()
+
+      var svg = d3.select("#mapLegend").append("svg")
+      .attr("width", "100%")
+      .attr("height", 500);
+
+      svg.append("g")
+      .attr("class", "legendOrdinal")
+      .attr("transform", "translate(20,20)");
+
+      var ordinal = d3.scaleOrdinal()
+      .domain(unique)
+      .range(d3.schemeTableau10);
+
+      var legendOrdinal = d3.legendColor()
+      .scale(ordinal);
+
+      svg.select(".legendOrdinal")
+      .call(legendOrdinal);
     }
+
+    vis.buildColorLegend();
 
     if(typeof vis.Dots != 'undefined') vis.Dots.remove()
     vis.Dots = vis.svg.selectAll('circle')
@@ -134,6 +221,7 @@ class LeafletMap {
                               stringReturn += `<ul>`
                               stringReturn += `<li>Year collected: ${d.year}</li>`
                               stringReturn += `<li>Collected By: ${d.recordedBy}</li>`
+                              stringReturn += `<li>Pylum By: ${d.phylum}</li>`
                               stringReturn += `<li>Classification: ${d.class}</li>`
                               stringReturn += `<li>Habitat: ${d.habitat}</li>`
                               stringReturn += `<li>Substrate: ${d.substrate}</li>`
@@ -177,6 +265,7 @@ class LeafletMap {
     vis.theMap.eachLayer(function (layer){
       vis.theMap.removeLayer(layer)
     })
+
     L.tileLayer.provider(_name, {
       accessToken: _token
     }).addTo(vis.theMap)
@@ -198,5 +287,39 @@ class LeafletMap {
 
     //not using right now... 
  
+  }
+
+  buildColorLegend(){
+    let vis = this;
+
+   /* if(parseInt(vis.data[0][_classification])){
+      vis.colorScale = d3.scaleSequential()
+        .interpolator(d3.interpolateViridis)
+        .domain(d3.extent(vis.data, d => d[_classification]));
+    } else {
+      var svg = d3.select("#mapLegend").append("svg")
+      .attr("width", 960)
+      .attr("height", 500);
+    
+    svg.append("g")
+      .attr("class", "legendOrdinal")
+      .attr("transform", "translate(20,20)");
+    
+    var categories = ["0-2", "2.1-4", "4.1-6", "6.1-8", "8.1-10", "10.1-12", "12.1-14", "14.1-16", "16.1-18", "18.1-20", "20.1-22", "22.1-24", "24.1-26", "26.1-28", "28.1-30", ">30"];
+    
+    var ordinal = d3.scaleOrdinal()
+      .domain(unique)
+      .range(unique.map((val, i) => 
+        d3.interpolateYlGnBu(i / (unique.length - 1))
+      ));
+    
+    var legendOrdinal = d3.legendColor()
+      .scale(ordinal);
+    
+    svg.select(".legendOrdinal")
+      .call(legendOrdinal);
+    }*/
+
+    
   }
 }

@@ -10,7 +10,7 @@
     <div style="float: left;width:45%;height:100%;">
         <label>Select Colors for Points By:</label><br/>
         <select id="ColorSelect">
-            <option value="class">Class</option>
+            <option value="phylum">Phylum</option>
             <option value="startDayOfYear">StartDayOfYear</option>
             <option value="year" selected>Year</option>
         </select>
@@ -21,16 +21,21 @@
         </select>
     </div> 
     <div id="my-map"></div>
+    <div style="height: 10vh; width: 100%;"id="mapLegend"></div>
+    <div class="container"></div>
     
     <script src="js/d3.v6.min.js"></script>
     <script src="js/leaflet.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.js"></script>
+
+    <script src="http://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="js/leaflet-providers.js"></script>
 
     <script src="js/main.js"></script>
     <script src="js/leafletMap.js"></script>
 
-    <script src="http://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="js/leaflet-providers.js"></script>
+    
 
     <div id="tooltip"></div>
 
