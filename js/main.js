@@ -1,4 +1,4 @@
-var fungusData, mapBackground;
+var fungusData, mapBackground, timeLine;
 
 document.getElementById("ColorSelect").onchange = function(){
   updateMapDots(this.value)
@@ -18,6 +18,18 @@ Promise.all([
       //parsing data to integers
       fungusData = new fungiData(data)
       fungusData.parseData()
+      fungusData.countDataByYear()
+
+      var width = document.getElementById("timeLine").parentElement.offsetWidth
+      var height = document.getElementById("timeLine").parentElement.offsetHeight
+
+      timeLine = new BarChart({ 
+        parentElement: '#timeLine', 
+        title:"Samples Grouped By Year",
+        containerWidth: width,
+        containerHeight: height
+      }, 
+      fungusData.countsByYear);
 
       //adding map background options
       mapBackground.forEach(function (item, index){

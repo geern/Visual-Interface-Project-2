@@ -22,6 +22,42 @@ class fungiData {
         d.longitude = d.decimalLongitude; //make sure these are not strings
       }
     });
-    this.data = data 
+  }
+
+  countDataByYear(){
+    let data = this.data;
+
+    /*var uniqueYears = [...new Set(data.map(item => item.year))];
+    uniqueYears.splice(uniqueYears.findIndex(Number.isNaN), 1)
+    */
+    var counts = []
+
+    for(var i = 1859; i <= 2017; i++){
+      var obj = {year: i, count: 0}
+        counts.push(obj)
+    }
+
+    data.forEach( item => {
+      if(counts.find(o => o.year === item.year) === undefined){
+        var obj = {year: item.year, count: 1}
+        counts.push(obj)
+      }  else {
+        counts.find(o => o.year === item.year).count++
+        
+      }
+    })
+
+    //for posterity
+    var counter = 0
+    for(var i = counts.length-1; i > 0; i--){
+      if(isNaN(counts[i].year)) {
+        counter++;
+        counts.splice(i, 1)
+      }
+    }
+
+    //counts.sort((a,b) => ((a.year > b.year) ? 1 : ((b.year > a.year) ? -1 : 0)))
+    
+    this.countsByYear = counts;
   }
 }
