@@ -154,8 +154,6 @@ class LeafletMap {
         incrementTicks.push({value: domain[1]})
       }
 
-      console.log(incrementTicks)
-
       legend.selectAll('.legend-label')
         .data(incrementTicks)
         .join('text')
@@ -195,9 +193,7 @@ class LeafletMap {
       svg.select(".legendOrdinal")
       .call(legendOrdinal);
     }
-
-    vis.buildColorLegend();
-
+    
     if(typeof vis.Dots != 'undefined') vis.Dots.remove()
     vis.Dots = vis.svg.selectAll('circle')
                     .data(vis.data) 
@@ -287,39 +283,5 @@ class LeafletMap {
 
     //not using right now... 
  
-  }
-
-  buildColorLegend(){
-    let vis = this;
-
-   /* if(parseInt(vis.data[0][_classification])){
-      vis.colorScale = d3.scaleSequential()
-        .interpolator(d3.interpolateViridis)
-        .domain(d3.extent(vis.data, d => d[_classification]));
-    } else {
-      var svg = d3.select("#mapLegend").append("svg")
-      .attr("width", 960)
-      .attr("height", 500);
-    
-    svg.append("g")
-      .attr("class", "legendOrdinal")
-      .attr("transform", "translate(20,20)");
-    
-    var categories = ["0-2", "2.1-4", "4.1-6", "6.1-8", "8.1-10", "10.1-12", "12.1-14", "14.1-16", "16.1-18", "18.1-20", "20.1-22", "22.1-24", "24.1-26", "26.1-28", "28.1-30", ">30"];
-    
-    var ordinal = d3.scaleOrdinal()
-      .domain(unique)
-      .range(unique.map((val, i) => 
-        d3.interpolateYlGnBu(i / (unique.length - 1))
-      ));
-    
-    var legendOrdinal = d3.legendColor()
-      .scale(ordinal);
-    
-    svg.select(".legendOrdinal")
-      .call(legendOrdinal);
-    }*/
-
-    
   }
 }
