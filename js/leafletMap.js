@@ -18,39 +18,13 @@ class LeafletMap {
    */
   initVis() {
     let vis = this;
-
-    //ESRI
-    vis.esriUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-    vis.esriAttr = 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
-
-    //TOPO
-    vis.topoUrl ='https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
-    vis.topoAttr = 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-
-    //Thunderforest Outdoors- requires key... so meh... 
-    vis.thOutUrl = 'https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey={apikey}';
-    vis.thOutAttr = '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-
-    //Stamen Terrain
-    vis.stUrl = 'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}';
-    vis.stAttr = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-
-    //this is the base map layer, where we are showing the map background
-    /*vis.base_layer = L.tileLayer(vis.esriUrl, {
-      id: 'esri-image',
-      attribution: vis.esriAttr,
-      ext: 'png'
-    });*/
-
-    vis.theMap = L.map('my-map', {
+    
+    vis.theMap = L.map(vis.config.parentElement, {
       center: [30, 0],
       zoom: 2
       //layers: [vis.base_layer]
     });
 
-    /*L.tileLayer.provider('Jawg.Streets', {
-      accessToken: 'ZbfatVMXqkwePUctq85uzb20cxPlhBZEVGXBSm8mt2glUIYxtLepu1zsX4RbOAFC'
-    }).addTo(vis.theMap)*/
     vis.updateVisBackground('Jawg.Streets', 'ZbfatVMXqkwePUctq85uzb20cxPlhBZEVGXBSm8mt2glUIYxtLepu1zsX4RbOAFC', 'year')
     //vis.updateVisBackground("Basic", vis.esriUrl, vis.esriAttr)
 
@@ -177,7 +151,6 @@ class LeafletMap {
 
       var svg = d3.select("#mapLegend").append("svg")
       .attr("width", "100%")
-      .attr("height", 500);
 
       svg.append("g")
       .attr("class", "legendOrdinal")

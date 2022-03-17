@@ -20,23 +20,25 @@ Promise.all([
       fungusData.parseData()
       fungusData.countDataByYear()
 
-      var width = document.getElementById("timeLine").parentElement.offsetWidth
-      var height = document.getElementById("timeLine").parentElement.offsetHeight
+      var width = document.getElementById("timeLine").clientWidth
+      var height = document.getElementById("timeLine").clientHeight
 
       timeLine = new BarChart({ 
         parentElement: '#timeLine', 
         title:"Samples Grouped By Year",
         containerWidth: width,
-        containerHeight: height
+        containerHeight: height,
+        xLabel: "Years",
+        yLabel: "Sample Count"
       }, 
-      fungusData.countsByYear);
+      fungusData.countsByYear, "Years", "Sample Count");
 
       //adding map background options
       mapBackground.forEach(function (item, index){
         loadDropDown("mapBackgroundSelect", [item.DisplayName])
       })
       
-      leafletMap = new LeafletMap({ parentElement: '#my-map'}, fungusData.data);
+      leafletMap = new LeafletMap({ parentElement: 'my-map'}, fungusData.data);
 })
 
 function updateMapDots(_classification){

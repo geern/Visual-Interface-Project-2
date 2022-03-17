@@ -7,23 +7,25 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div style="float: left;width:45%;height:100%;">
-        <label>Select Colors for Points By:</label><br/>
-        <select id="ColorSelect">
-            <option value="phylum">Phylum</option>
-            <option value="startDayOfYear">StartDayOfYear</option>
-            <option value="year" selected>Year</option>
-        </select>
-    </div> 
-    <div style="float: left;width:45%;height:100%;">
-        <label>Select Map Background:</label><br/>
-        <select id="mapBackgroundSelect">
-        </select>
-    </div> 
-    <div id="my-map"></div>
-    <div style="height: 10vh; width: 100%;"id="mapLegend"></div>
-    <div class="container"></div>
-    <svg style="height: 100vh; width: 100%;" id="timeLine"></svg>
+    <div style="height: 100vh; width: 98.5vw;">
+        <div style="float: left;width:50%;height:5%;">
+            <label>Select Colors for Points By:</label><br/>
+            <select id="ColorSelect">
+                <option value="phylum">Phylum</option>
+                <option value="startDayOfYear">StartDayOfYear</option>
+                <option value="year" selected>Year</option>
+            </select>
+        </div> 
+        <div style="float: left;width:50%;height:5%;">
+            <label>Select Map Background:</label><br/>
+            <select id="mapBackgroundSelect">
+            </select>
+        </div> 
+        <div id="my-map"></div>
+        <div style="height: 10vh; width: 100%;"id="mapLegend"></div>
+        <div class="container"></div>
+        <svg style="height: 25%; width: 100%;" id="timeLine"></svg>
+    </div>
     
     <script src="js/d3.v6.min.js"></script>
     <script src="js/leaflet.js"></script>
