@@ -71,17 +71,61 @@ class BarChart {
             .text(vis.config.title);
 
         // Bars
-        vis.svg.selectAll("mybar")
+        vis.svg.selectAll("bar")
             .data(vis.data)
             .enter()
-            .append("rect")
+        .append("rect")
             .attr("x", function(d) { return vis.xAxis(d.year); })
             .attr("y", function(d) { return vis.yAxis(d.count); })
             .attr("width", vis.xAxis.bandwidth())
             .attr("height", function(d) { return vis.height - vis.yAxis(d.count); })
             .attr("fill", "#69b3a2")
 
-        
+        //createing area for hovering years to display data
+        vis.svg.selectAll("bar")
+            .data(vis.data)
+            .enter()
+        .append("rect")
+            .attr("x", function(d) { return vis.xAxis(d.year); })
+            .attr("y", function(d) { return vis.yAxis(d3.extent(vis.data, d => d.count)[1]); })
+            .attr("width", vis.xAxis.bandwidth())
+            .attr("height", function(d) { return vis.height})
+            .attr("fill", "white")
+            .style('opacity', 0.1)
+            .on('mouseover', function(event,d) { //function to add mouseover event
+                            d3.select(this).transition() //D3 selects the object we have moused over in order to perform operations on it
+                              .duration('150') //how long we are transitioning between the two states (works like keyframes)
+                              .attr("fill", "yellow") //change the fill
+                              .style('opacity', 0.25)
+                            var html = () => {
+                              var stringReturn = ``
+                              stringReturn += `<div class="tooltip-label" "></div>`
+                              stringReturn += `<ul>`
+                              stringReturn += `<li>Year collected: ${d.year}</li>`
+                              stringReturn += `<li>Samples Collected: ${d.count}</li>`
+                              stringReturn += `</ul>`
+                              return stringReturn
+                            }
+                            //create a tool tip
+                            d3.select('#tooltip')
+                                .style('opacity', 1)
+                                .style('z-index', 1000000)
+                                .html(html);
+                          })
+                        .on('mousemove', (event) => {
+                            //position the tooltip
+                            d3.select('#tooltip')
+                              .style('left', (event.pageX + 10) + 'px')   
+                              .style('top', (event.pageY + 10) + 'px');
+                         })              
+                        .on('mouseleave', function() { //function to add mouseover event
+                            d3.select(this).transition() //D3 selects the object we have moused over in order to perform operations on it
+                              .duration('150') //how long we are transitioning between the two states (works like keyframes)
+                              .attr("fill", "white") //change the fill
+
+                            d3.select('#tooltip').style('opacity', 0);//turn off the tooltip
+
+                          })
 
     }
 }
