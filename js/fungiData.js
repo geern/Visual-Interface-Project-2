@@ -75,11 +75,11 @@ class fungiData {
 
     var counts = []
 
-    for(var i = 0; i <= 12; i++){
+    for(var i = 1; i <= 12; i++){
       counts.push({month: i, count: 0})
     }
 
-    result.forEach( item => {
+    result.forEach(item => {
       if(counts.find(o => o.month === item.month) === undefined){
         counts.find(o => o.month === "0").count++
       }  else {
@@ -107,5 +107,23 @@ class fungiData {
     groupedData.sort((a,b) => ((a.count < b.count) ? 1 : ((b.count < a.count) ? -1 : 0)))
 
     fungi["groupedDataBy" + _category] = groupedData
+  }
+
+  getDataforTable(_data){
+    let fungi = this
+    
+    let countWithCoords = 0
+    let countWithoutCoords = 0
+    let countWithEvent = 0
+    let countWithoutEvent = 0
+
+    _data.forEach(item => {
+      if(item.latitude != 9999999 && item.longitude != 9999999) countWithCoords++
+      else countWithoutCoords++
+      if(!isNaN(item.eventDate)) countWithEvent++
+      else countWithoutEvent++
+    })
+
+    fungi.tableData = {totalRecords: _data.length, withCoords: countWithCoords, withoutCoords: countWithoutCoords, withEvent: countWithEvent, withoutEvent: countWithoutEvent}
   }
 }

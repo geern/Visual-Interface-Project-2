@@ -31,7 +31,8 @@ Promise.all([
         xLabel: "Years",
         yLabel: "Sample Count",
         xValue: "year",
-        yValue: "count"
+        yValue: "count",
+        margin: {top: 30, right: 100, bottom: 70, left: 100}
       }, 
       fungusData.countsByYear);
 
@@ -41,7 +42,7 @@ Promise.all([
         title:"Samples from " + 1900,
         containerWidth: width,
         containerHeight: height,
-        xLabel: "Month",
+        xLabel: "Month of the Year",
         yLabel: "Sample Count",
         xValue: "month",
         yValue: "count"
@@ -49,7 +50,6 @@ Promise.all([
       fungusData.groupOfDataByYear);
 
       fungusData.getCountByCategory("phylum")
-      console.log(fungusData.groupedDataBySpecimen)
 
       sampledByPhylum = new BarChart({ 
         parentElement: '#sampleByPhylum', 
@@ -59,12 +59,12 @@ Promise.all([
         xLabel: "Phylum",
         yLabel: "Sample Count",
         xValue: "phylum",
-        yValue: "count"
+        yValue: "count",
+        margin: {top: 30, right: 100, bottom: 100, left: 100}
       }, 
       fungusData.groupedDataByphylum);
 
       fungusData.getCountByCategory("recordedBy")
-      console.log(fungusData)
 
       sampledByCollector = new BarChart({ 
         parentElement: '#sampleByCollector', 
@@ -74,9 +74,13 @@ Promise.all([
         xLabel: "Recorder",
         yLabel: "Sample Count",
         xValue: "recordedBy",
-        yValue: "count"
+        yValue: "count",
+        margin: {top: 30, right: 100, bottom: 120, left: 100}
       }, 
-      fungusData.groupedDataByrecordedBy.slice(0,9));
+      fungusData.groupedDataByrecordedBy.slice(0,10));
+      fungusData.getDataforTable(fungusData.data)
+      let tmp = new Table()
+      tmp.createTable(fungusData.tableData)
 
       //adding map background options
       mapBackground.forEach(function (item, index){

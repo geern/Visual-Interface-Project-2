@@ -62,7 +62,7 @@ class BarChart {
             .attr("class", "x label")
             .attr("text-anchor", "middle")
             .attr("x", vis.config.containerWidth / 2)
-            .attr("y", vis.config.containerHeight)
+            .attr("y", vis.config.containerHeight - 20)
             .text(vis.config.xLabel);
 
         d3.select(vis.config.parentElement).append("text")
