@@ -1,4 +1,4 @@
-var fungusData, mapBackground, timeLine;
+var fungusData, mapBackground, timeLine, sampledByYear, sampledByPhylum, sampledByCollector;
 
 document.getElementById("ColorSelect").onchange = function(){
   updateMapDots(this.value)
@@ -29,9 +29,54 @@ Promise.all([
         containerWidth: width,
         containerHeight: height,
         xLabel: "Years",
-        yLabel: "Sample Count"
+        yLabel: "Sample Count",
+        xValue: "year",
+        yValue: "count"
       }, 
-      fungusData.countsByYear, "Years", "Sample Count");
+      fungusData.countsByYear);
+
+      fungusData.getDataByYear(1900)
+      sampledByYear = new BarChart({ 
+        parentElement: '#sampleByYear', 
+        title:"Samples from " + 1900,
+        containerWidth: width,
+        containerHeight: height,
+        xLabel: "Month",
+        yLabel: "Sample Count",
+        xValue: "month",
+        yValue: "count"
+      }, 
+      fungusData.groupOfDataByYear);
+
+      fungusData.getCountByCategory("phylum")
+      console.log(fungusData.groupedDataBySpecimen)
+
+      sampledByPhylum = new BarChart({ 
+        parentElement: '#sampleByPhylum', 
+        title:"Samples Grouped By Phylum",
+        containerWidth: width,
+        containerHeight: height,
+        xLabel: "Phylum",
+        yLabel: "Sample Count",
+        xValue: "phylum",
+        yValue: "count"
+      }, 
+      fungusData.groupedDataByphylum);
+
+      fungusData.getCountByCategory("recordedBy")
+      console.log(fungusData)
+
+      sampledByCollector = new BarChart({ 
+        parentElement: '#sampleByCollector', 
+        title:"Samples Grouped By Collector (Top 10)",
+        containerWidth: width,
+        containerHeight: height,
+        xLabel: "Recorder",
+        yLabel: "Sample Count",
+        xValue: "recordedBy",
+        yValue: "count"
+      }, 
+      fungusData.groupedDataByrecordedBy.slice(0,9));
 
       //adding map background options
       mapBackground.forEach(function (item, index){

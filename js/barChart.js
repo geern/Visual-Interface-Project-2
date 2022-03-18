@@ -8,7 +8,9 @@ class BarChart {
             class: _config.class || "none",
             title: _config.title,
             xLabel: _config.xLabel,
-            yLabel: _config.yLabel
+            yLabel: _config.yLabel,
+            xValue: _config.xValue,
+            yValue: _config.yValue
         }
         this.data = _data;
         this.initVis();
@@ -20,7 +22,7 @@ class BarChart {
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
-        vis.svg = d3.select("#timeLine")
+        vis.svg = d3.select(vis.config.parentElement)
             .append("svg")
             .attr("width", vis.width + vis.config.margin.left + vis.config.margin.right)
             .attr("height", vis.height + vis.config.margin.top + vis.config.margin.bottom)
@@ -31,24 +33,24 @@ class BarChart {
         // X axis
         vis.xAxis = d3.scaleBand()
             .range([ 0, vis.width ])
-            .domain(vis.data.map(function(d) { return d.year; }))
+            .domain(vis.data.map(function(d) { return d[vis.config.xValue]; }))
             .padding(0.2);
 
         vis.svg.append("g")
             .attr("transform", "translate(0," + vis.height + ")")
             .call(d3.axisBottom(vis.xAxis))
             .selectAll("text")
-            .attr("transform", "translate(-10,0)rotate(-65)")
+            .attr("transform", "translate(-10,2)rotate(-65)")
             .style("text-anchor", "end");
 
         // Add Y axis
         vis.yAxis = d3.scaleLinear()
-            .domain(d3.extent(vis.data, d => d.count))
+            .domain(d3.extent(vis.data, d => d[vis.config.yValue]))
             .range([ vis.height, 0]);
         vis.svg.append("g")
             .call(d3.axisLeft(vis.yAxis));
 
-        d3.select("#timeLine").append("text")
+        d3.select(vis.config.parentElement).append("text")
             .attr("class", "y label")
             .attr("text-anchor", "middle")
             .attr("x", (-1) * vis.config.containerHeight / 2)
@@ -56,14 +58,14 @@ class BarChart {
             .attr("transform", "rotate(-90)")
             .text(vis.config.yLabel);
 
-        d3.select("#timeLine").append("text")
+        d3.select(vis.config.parentElement).append("text")
             .attr("class", "x label")
             .attr("text-anchor", "middle")
             .attr("x", vis.config.containerWidth / 2)
             .attr("y", vis.config.containerHeight)
             .text(vis.config.xLabel);
 
-        d3.select("#timeLine").append("text")
+        d3.select(vis.config.parentElement).append("text")
             .attr("class", "title label")
             .attr("text-anchor", "middle")
             .attr("x", vis.config.containerWidth / 2)
@@ -75,10 +77,10 @@ class BarChart {
             .data(vis.data)
             .enter()
         .append("rect")
-            .attr("x", function(d) { return vis.xAxis(d.year); })
-            .attr("y", function(d) { return vis.yAxis(d.count); })
+            .attr("x", function(d) { return vis.xAxis(d[vis.config.xValue]); })
+            .attr("y", function(d) { return vis.yAxis(d[vis.config.yValue]); })
             .attr("width", vis.xAxis.bandwidth())
-            .attr("height", function(d) { return vis.height - vis.yAxis(d.count); })
+            .attr("height", function(d) { return vis.height - vis.yAxis(d[vis.config.yValue]); })
             .attr("fill", "#69b3a2")
 
         //createing area for hovering years to display data
@@ -86,8 +88,8 @@ class BarChart {
             .data(vis.data)
             .enter()
         .append("rect")
-            .attr("x", function(d) { return vis.xAxis(d.year); })
-            .attr("y", function(d) { return vis.yAxis(d3.extent(vis.data, d => d.count)[1]); })
+            .attr("x", function(d) { return vis.xAxis(d[vis.config.xValue]); })
+            .attr("y", function(d) { return vis.yAxis(d3.extent(vis.data, d => d[vis.config.yValue])[1]); })
             .attr("width", vis.xAxis.bandwidth())
             .attr("height", function(d) { return vis.height})
             .attr("fill", "white")
@@ -101,8 +103,8 @@ class BarChart {
                               var stringReturn = ``
                               stringReturn += `<div class="tooltip-label" "></div>`
                               stringReturn += `<ul>`
-                              stringReturn += `<li>Year collected: ${d.year}</li>`
-                              stringReturn += `<li>Samples Collected: ${d.count}</li>`
+                              stringReturn += `<li>${vis.config.xValue}: ${d[vis.config.xValue]}</li>`
+                              stringReturn += `<li>Samples Collected: ${d[vis.config.yValue]}</li>`
                               stringReturn += `</ul>`
                               return stringReturn
                             }

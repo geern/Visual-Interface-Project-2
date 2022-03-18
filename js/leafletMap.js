@@ -18,7 +18,7 @@ class LeafletMap {
    */
   initVis() {
     let vis = this;
-    
+
     vis.theMap = L.map(vis.config.parentElement, {
       center: [30, 0],
       zoom: 2
@@ -82,10 +82,12 @@ class LeafletMap {
 
       d3.select("#mapLegend").selectAll("*").remove()
 
+      d3.select("#mapLegend").style('height', '10vh')
+
       var svg = d3.select("#mapLegend").append('svg')
         .attr('class', 'center-container')
         .attr('width', '100%')
-        .attr('height', '20vh');
+
       var gradient = svg.append('defs').append('linearGradient')
         .attr("id", "legend-gradient")
 
@@ -107,8 +109,6 @@ class LeafletMap {
         { color: vis.colorScale(domain[0]), value: domain[0], offset: 0},
         { color: vis.colorScale(domain[1]), value: domain[1], offset: 100},
       ];
-
-      
 
       gradient.selectAll('stop')
         .data(legendStops)
@@ -141,30 +141,39 @@ class LeafletMap {
         .text(d => d.value);
     } else {
       var unique = [...new Set(vis.data.map(item => item[_classification]))];
-      unique.splice(unique.indexOf(""), 1)
+      unique.sort()
 
       vis.colorScale = d3.scaleOrdinal()
         .domain(unique)
         .range(d3.schemeTableau10);
 
       d3.select("#mapLegend").selectAll("*").remove()
+      d3.select("#mapLegend").style('height', '10vh')
 
       var svg = d3.select("#mapLegend").append("svg")
-      .attr("width", "100%")
+        .attr("width", "100%")
+        .attr("height", "100%")
+
+      svg.append('text')
+        .attr('transform', `translate(0,${parseInt(svg.style('height')) - 1})`)
+        .style("font-size", "10px")
+        .text("*Some data phylums are blank")
 
       svg.append("g")
-      .attr("class", "legendOrdinal")
-      .attr("transform", "translate(20,20)");
-
-      var ordinal = d3.scaleOrdinal()
-      .domain(unique)
-      .range(d3.schemeTableau10);
+        .attr("class", "legendOrdinal")
+        .attr("transform", "translate(20,20)");
 
       var legendOrdinal = d3.legendColor()
-      .scale(ordinal);
+        .title("Color By Phylum")
+        .shapeWidth(100)
+        .shapePadding(50)
+        .orient('horizontal')
+        .scale(vis.colorScale);
 
       svg.select(".legendOrdinal")
-      .call(legendOrdinal);
+        .call(legendOrdinal);
+      console.log(svg.style('height'))
+      
     }
     
     if(typeof vis.Dots != 'undefined') vis.Dots.remove()
@@ -190,7 +199,7 @@ class LeafletMap {
                               stringReturn += `<ul>`
                               stringReturn += `<li>Year collected: ${d.year}</li>`
                               stringReturn += `<li>Collected By: ${d.recordedBy}</li>`
-                              stringReturn += `<li>Pylum By: ${d.phylum}</li>`
+                              stringReturn += `<li>Pylum: ${d.phylum}</li>`
                               stringReturn += `<li>Classification: ${d.class}</li>`
                               stringReturn += `<li>Habitat: ${d.habitat}</li>`
                               stringReturn += `<li>Substrate: ${d.substrate}</li>`
@@ -209,7 +218,7 @@ class LeafletMap {
                         .on('mousemove', (event) => {
                             //position the tooltip
                             d3.select('#tooltip')
-                             .style('left', (event.pageX + 10) + 'px')   
+                              .style('left', (event.pageX + 10) + 'px')   
                               .style('top', (event.pageY + 10) + 'px');
                          })              
                         .on('mouseleave', function() { //function to add mouseover event
