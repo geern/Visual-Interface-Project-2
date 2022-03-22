@@ -180,8 +180,8 @@ class LeafletMap {
   updateData(_selection){
     let vis = this
     vis.data.forEach(fungi => {
-          fungi.selected = false
-      })
+        fungi.selected = false
+    })
 
     _selection.forEach(item => {
       vis.data.forEach(fungi => {

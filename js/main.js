@@ -1,4 +1,4 @@
-var fungusData, mapBackground, timeLine, sampledByYear, sampledByPhylum, sampledByCollector;
+var data, fungusData, mapBackground, timeLine, sampledByYear, sampledByPhylum, sampledByCollector, table;
 
 document.getElementById("ColorSelect").onchange = function(){
   updateMapDots(this.value)
@@ -83,7 +83,7 @@ Promise.all([
 
       sampledByCollector = new BarChart({ 
         parentElement: '#sampleByCollector', 
-        title:"Samples Grouped By Collector (Top 10)",
+        title:"Samples Grouped By Collector",
         containerWidth: width,
         containerHeight: height,
         xLabel: "Recorder",
@@ -93,9 +93,10 @@ Promise.all([
         margin: {top: 30, right: 100, bottom: 120, left: 100}
       }, 
       fungusData.groupedDataByrecordedBy.slice(0,10));
+
       fungusData.getDataforTable(fungusData.data)
-      let tmp = new Table()
-      tmp.createTable(fungusData.tableData)
+      table = new Table()
+      table.createTable(fungusData.tableData)
 
       //adding map background options
       mapBackground.forEach(function (item, index){
@@ -105,7 +106,7 @@ Promise.all([
       leafletMap = new LeafletMap({ parentElement: 'my-map'}, fungusData.data);
 })
 
-function brushActive(_range){
+function setSliderFromBrush(_range){
   let slider = document.getElementById('YearSlider')
   let label = document.getElementById("SliderLabel")
   label.innerHTML = "Current Selected Year: " + _range[0]
@@ -149,4 +150,15 @@ function loadDropDown(_name, _values){
   opt.value = value
   opt.innerHTML = innerHTML
   select.appendChild(opt)
+}
+
+function updateFromBrush(_selection){
+  leafletMap.updateData(_selection)
+  fungiData.data = _selection
+  fungusData.getCountByCategory("phylum")
+  fungusData.getCountByCategory("recordedBy")
+  fungusData.getDataforTable(fungiData.data)
+  sampledByPhylum.updateVis(fungusData.groupedDataByphylum)
+  sampledByCollector.updateVis(fungusData.groupedDataByrecordedBy.slice(0,10))
+  table.updateTable(fungusData.tableData)
 }

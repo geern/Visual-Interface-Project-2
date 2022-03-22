@@ -51,14 +51,19 @@ class Table {
     
     let row = document.createElement('tr');
     let row_data_1 = document.createElement('td');
+    row_data_1.id = 'totalRecords';
     row_data_1.innerHTML = _data.totalRecords;
     let row_data_2 = document.createElement('td');
+    row_data_2.id = 'withCoords';
     row_data_2.innerHTML = _data.withCoords;
     let row_data_3 = document.createElement('td');
+    row_data_3.id = 'withoutCoords';
     row_data_3.innerHTML = _data.withoutCoords;
     let row_data_4 = document.createElement('td');
+    row_data_4.id = 'withEvent';
     row_data_4.innerHTML = _data.withEvent;
     let row_data_5 = document.createElement('td');
+    row_data_5.id = 'withoutEvent';
     row_data_5.innerHTML = _data.withoutEvent;
 
     row.appendChild(row_data_1);
@@ -67,5 +72,13 @@ class Table {
     row.appendChild(row_data_4);
     row.appendChild(row_data_5);
     table.tbody.appendChild(row);
+  }
+
+  updateTable(_data){
+    document.getElementById('totalRecords').innerHTML = _data.totalRecords
+    document.getElementById('withCoords').innerHTML = _data.withCoords
+    document.getElementById('withoutCoords').innerHTML = _data.withoutCoords
+    document.getElementById('withEvent').innerHTML = _data.withEvent
+    document.getElementById('withoutEvent').innerHTML = _data.withoutEvent
   }
 }

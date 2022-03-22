@@ -31,13 +31,26 @@ class BarChart {
             "translate(" + vis.config.margin.left + "," + vis.config.margin.top + ")");        
 
         // X axis
-        vis.xScale = d3.scaleBand()
+        /*vis.xScale = d3.scaleBand()
             .range([ 0, vis.width ])
             .domain(vis.data.map(function(d) { return d[vis.config.xValue]; }))
             .padding(0.2);
 
         vis.svg.append("g")
             .attr("transform", "translate(0," + vis.height + ")")
+            .call(d3.axisBottom(vis.xScale))
+            .selectAll("text")
+            .attr("transform", "translate(-10,2)rotate(-65)")
+            .style("text-anchor", "end");*/
+
+        vis.xScale = d3.scaleBand()
+            .range([ 0, vis.width ])
+            .domain(vis.data.map(function(d) { return d[vis.config.xValue]; }))
+            .padding(0.2);
+        vis.xAxis = d3.axisBottom(vis.xScale)
+        vis.xAxisG = vis.svg.append("g")
+            .attr("transform", "translate(0," + vis.height + ")")
+            .attr('class', 'xAxis' + vis.config.title.replace(/\s/g, '').replace(/\./g,''))
             .call(d3.axisBottom(vis.xScale))
             .selectAll("text")
             .attr("transform", "translate(-10,2)rotate(-65)")
@@ -74,66 +87,7 @@ class BarChart {
             .attr("y", 25)
             .text(vis.config.title);
 
-        // Bars
-        vis.svg.selectAll(".bar")
-            .data(vis.data)
-            .enter()
-        .append("rect")
-            .attr('class', 'bar')
-            .attr("x", function(d) { return vis.xScale(d[vis.config.xValue]); })
-            .attr("y", function(d) { return vis.yScale(d[vis.config.yValue]); })
-            .attr("width", vis.xScale.bandwidth())
-            .attr("height", function(d) { return vis.height - vis.yScale(d[vis.config.yValue]); })
-            .attr("fill", "#69b3a2")
-
-        //createing area for hovering years to display data
-        vis.svg.selectAll(".barHighlight")
-            .data(vis.data)
-            .enter()
-        .append("rect")
-            .attr("x", function(d) { return vis.xScale(d[vis.config.xValue]); })
-            .attr("y", function(d) { return vis.yScale(d3.extent(vis.data, d => d[vis.config.yValue])[1]); })
-            .attr("width", vis.xScale.bandwidth())
-            .attr("height", function(d) { return vis.height})
-            .attr("fill", "white")
-            .attr("class", "barHighlight")
-            .style('opacity', 0.1)
-            .on('mouseover', function(event,d) { //function to add mouseover event
-                d3.select(this).transition() //D3 selects the object we have moused over in order to perform operations on it
-                  .duration('150') //how long we are transitioning between the two states (works like keyframes)
-                  .attr("fill", "yellow") //change the fill
-                  .style('opacity', 0.25)
-                var html = () => {
-                  var stringReturn = ``
-                  stringReturn += `<div class="tooltip-label" "></div>`
-                  stringReturn += `<ul>`
-                  stringReturn += `<li>${vis.config.xValue}: ${d[vis.config.xValue]}</li>`
-                  stringReturn += `<li>Samples Collected: ${d[vis.config.yValue]}</li>`
-                  stringReturn += `</ul>`
-                  return stringReturn
-                }
-                //create a tool tip
-                d3.select('#tooltip')
-                    .style('opacity', 1)
-                    .style('z-index', 1000000)
-                    .html(html);
-            })
-            .on('mousemove', (event) => {
-                //position the tooltip
-                d3.select('#tooltip')
-                  .style('left', (event.pageX + 10) + 'px')   
-                  .style('top', (event.pageY + 10) + 'px');
-            })              
-            .on('mouseleave', function() { //function to add mouseover event
-                d3.select(this).transition() //D3 selects the object we have moused over in order to perform operations on it
-                  .duration('150') //how long we are transitioning between the two states (works like keyframes)
-                  .attr("fill", "white") //change the fill
-
-                d3.select('#tooltip').style('opacity', 0);//turn off the tooltip
-
-            })
-
-        if(vis.config.parentElement == '#timeLine'){
+            if(vis.config.parentElement == '#timeLine' || vis.config.parentElement == '#sampleByYear'){
 
         vis.xScaleContext = d3.scaleBand()
             .range([ 0, vis.width ])
@@ -175,12 +129,78 @@ class BarChart {
               if (selection) vis.brushed(selection);
             })
             .on('end', function({selection}) {
-              if (!selection) vis.brushed([0, vis.width]);
+              if (!selection && vis.config.parentElement == '#sampleByYear') updateFromYearBrush(timeLine.selectedFungi)
+              else if (!selection) vis.brushed([0, vis.width]);
             });
 
         vis.brushG
             .call(vis.brush)
         }
+
+        // Bars
+        vis.svg.selectAll(".bar")
+            .data(vis.data)
+            .enter()
+        .append("rect")
+            .attr('class', 'bar')
+            .attr("x", function(d) { return vis.xScale(d[vis.config.xValue]); })
+            .attr("y", function(d) { return vis.yScale(d[vis.config.yValue]); })
+            .attr("width", vis.xScale.bandwidth())
+            .attr("height", function(d) { return vis.height - vis.yScale(d[vis.config.yValue]); })
+            .attr("fill", "#69b3a2")
+
+        //createing area for hovering years to display data
+        vis.svg.selectAll(".barHighlight")
+            .data(vis.data)
+            .enter()
+        .append("rect")
+            .attr("x", function(d) { return vis.xScale(d[vis.config.xValue]); })
+            .attr("y", function(d) { return vis.yScale(d3.extent(vis.data, d => d[vis.config.yValue])[1]); })
+            .attr("width", vis.xScale.bandwidth())
+            .attr("height", function(d) { return vis.height})
+            .attr("fill", "white")
+            .attr("class", "barHighlight")
+            .style('opacity', 0)
+            .on('mouseover', function(event,d) { //function to add mouseover event
+                d3.select(this).transition() //D3 selects the object we have moused over in order to perform operations on it
+                  .duration('150') //how long we are transitioning between the two states (works like keyframes)
+                  .attr("fill", "yellow") //change the fill
+                  .style('opacity', 0.25)
+                var html = () => {
+                  var stringReturn = ``
+                  stringReturn += `<div class="tooltip-label" "></div>`
+                  stringReturn += `<ul>`
+                  stringReturn += `<li>${vis.config.xValue}: ${d[vis.config.xValue]}</li>`
+                  stringReturn += `<li>Samples Collected: ${d[vis.config.yValue]}</li>`
+                  stringReturn += `</ul>`
+                  return stringReturn
+                }
+                //create a tool tip
+                d3.select('#tooltip')
+                    .style('opacity', 1)
+                    .style('z-index', 1000000)
+                    .html(html);
+            })
+            .on('mousemove', (event) => {
+                //position the tooltip
+                d3.select('#tooltip')
+                  .style('left', (event.pageX + 10) + 'px')   
+                  .style('top', (event.pageY + 10) + 'px');
+            })              
+            .on('mouseleave', function() { //function to add mouseover event
+                d3.select(this).transition() //D3 selects the object we have moused over in order to perform operations on it
+                  .duration('150') //how long we are transitioning between the two states (works like keyframes)
+                  .attr("fill", "white") //change the fill
+                  .style('opacity', 0)
+
+                d3.select('#tooltip').style('opacity', 0);//turn off the tooltip
+
+            })
+            .on('click', function(event, d){
+                console.log(d)
+            })
+
+        
 }
 
     updateVis(_data, _title){
@@ -189,6 +209,7 @@ class BarChart {
         vis.data = _data
 
         vis.yScale.domain([0, d3.extent(vis.data, d => d[vis.config.yValue])[1]])
+        vis.xScale.domain(vis.data.map(function(d) { return d[vis.config.xValue]; }))
         vis.svg.selectAll('.bar')
             .data(vis.data)
             .transition().duration(1000)
@@ -199,36 +220,62 @@ class BarChart {
         vis.svg.selectAll('.barHighlight')
             .data(vis.data)
             .transition().duration(10)
-
-        d3.select('.title' + vis.config.title.replace(/\s/g, '').replace(/\./g,''))
-            .text(_title);
+        if(_title !== undefined){
+            d3.select('.title' + vis.config.title.replace(/\s/g, '').replace(/\./g,''))
+                .text(_title);
+        }
 
         d3.select('.yAxis' + vis.config.title.replace(/\s/g, '').replace(/\./g,''))
             .transition()
             .duration(1000)
             .call(vis.yAxis)
 
+        d3.select('.xAxis' + vis.config.title.replace(/\s/g, '').replace(/\./g,''))
+            .transition()
+            .duration(1000)
+            .call(vis.xAxis)
+
     }
 
     brushed(selection) {
         let vis = this;
+        if(vis.config.parentElement == '#timeLine'){
+            let low = Math.floor(selection[0]/(vis.width/vis.data.length))
+            let high = Math.floor(selection[1]/(vis.width/vis.data.length))
+            let list = []
 
-        let low = Math.floor(selection[0]/(vis.width/vis.data.length))
-        let high = Math.ceil(selection[1]/(vis.width/vis.data.length))
-        let list = []
+            let extent = vis.data.map(function(d) { return d[vis.config.xValue]; })
 
-        let extent = vis.data.map(function(d) { return d[vis.config.xValue]; })
-        vis.data.forEach(item => {
-            if(item.year > extent[low] && item.year < extent[high-1]){
-                item.fungi.forEach(fungi => {
-                    list.push(fungi)
-                })
-            }
-        })
+            vis.data.forEach(item => {
+                if(item.year >= extent[low] && item.year <= extent[high-1]){
+                    item.fungi.forEach(fungi => {
+                        list.push(fungi)
+                    })
+                }
+            })
 
-        vis.selectedFungi = list
-        vis.yearRange = [extent[low], extent[high]]
-        brushActive(vis.yearRange)
-        leafletMap.updateData(vis.selectedFungi)
+            vis.selectedFungi = list
+            if(high == extent.length) high--
+            vis.yearRange = [extent[low], extent[high]]
+
+            setSliderFromBrush(vis.yearRange)
+            updateFromBrush(vis.selectedFungi)
+        } else if (vis.config.parentElement == '#sampleByYear'){
+            let low = Math.floor(selection[0]/(vis.width/vis.data.length))
+            let high = Math.ceil(selection[1]/(vis.width/vis.data.length))
+            let list = []
+
+            let extent = vis.data.map(function(d) { return d[vis.config.xValue]; })
+            vis.data.forEach(item => {
+                if(item.month >= extent[low] && item.month <= extent[high-1]){
+                    item.fungi.forEach(fungi => {
+                        list.push(fungi)
+                    })
+                }
+            })
+
+            vis.selectedFungi = list
+            updateFromBrush(vis.selectedFungi)
+        }
   }
 }

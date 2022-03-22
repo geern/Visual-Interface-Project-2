@@ -77,15 +77,16 @@ class fungiData {
     var counts = []
 
     for(var i = 1; i <= 12; i++){
-      counts.push({month: i, count: 0})
+      counts.push({month: i, count: 0, fungi: []})
     }
-    
+
     result.forEach(item => {
       if(!isNaN(item.month)){
         if(counts.find(o => o.month === item.month) === undefined){
           counts.find(o => o.month === "0").count++
         }  else {
           counts.find(o => o.month === item.month).count++
+          counts.find(o => o.month === item.month).fungi.push(item)
         }
         }
     })
@@ -104,7 +105,7 @@ class fungiData {
     })
 
     fungi.data.forEach(item => {
-      groupedData.find(o => o[_category] === item[_category]).count++
+      if(item.selected) groupedData.find(o => o[_category] === item[_category]).count++
     })
 
     groupedData.sort((a,b) => ((a.count < b.count) ? 1 : ((b.count < a.count) ? -1 : 0)))
@@ -121,10 +122,10 @@ class fungiData {
     let countWithoutEvent = 0
 
     _data.forEach(item => {
-      if(item.latitude != 9999999 && item.longitude != 9999999) countWithCoords++
-      else countWithoutCoords++
-      if(!isNaN(item.eventDate)) countWithEvent++
-      else countWithoutEvent++
+      if(item.latitude != 9999999 && item.longitude != 9999999 && item.selected) countWithCoords++
+      else if(item.latitude == 9999999 && item.longitude == 9999999 && item.selected) countWithoutCoords++
+      if(!isNaN(item.eventDate) && item.selected) countWithEvent++
+      else if(isNaN(item.eventDate) && item.selected) countWithoutEvent++
     })
 
     fungi.tableData = {totalRecords: _data.length, withCoords: countWithCoords, withoutCoords: countWithoutCoords, withEvent: countWithEvent, withoutEvent: countWithoutEvent}
