@@ -8,6 +8,20 @@ document.getElementById("mapBackgroundSelect").onchange = function(){
   updateMapBackground(this.value)
 }
 
+document.getElementById("YearSlider").oninput = function(){
+  var e = document.getElementById("YearSlider")
+  var label = document.getElementById("SliderLabel")
+  label.innerHTML = "Current Selected Year: " + e.value
+}
+
+//on slider change, updates all charts
+document.getElementById("YearSlider").onchange = function(){
+  var e = document.getElementById("YearSlider")
+  fungusData.getDataByYear(parseInt(e.value))
+
+  sampledByYear.updateVis(fungusData.groupOfDataByYear, "Samples from " + e.value)
+}
+
 Promise.all([
   d3.csv('data/occurrences.csv'),
   d3.csv('data/mapBackground.csv')
@@ -90,6 +104,16 @@ Promise.all([
       
       leafletMap = new LeafletMap({ parentElement: 'my-map'}, fungusData.data);
 })
+
+function brushActive(_range){
+  let slider = document.getElementById('YearSlider')
+  let label = document.getElementById("SliderLabel")
+  label.innerHTML = "Current Selected Year: " + _range[0]
+  slider.min = _range[0]
+  slider.max = _range[1]
+  slider.value = _range[0]
+  slider.onchange()
+}
 
 function updateMapDots(_classification){
   leafletMap.updateVisColor(_classification)

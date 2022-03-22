@@ -79,13 +79,15 @@ class fungiData {
     for(var i = 1; i <= 12; i++){
       counts.push({month: i, count: 0})
     }
-
+    
     result.forEach(item => {
-      if(counts.find(o => o.month === item.month) === undefined){
-        counts.find(o => o.month === "0").count++
-      }  else {
-        counts.find(o => o.month === item.month).count++
-      }
+      if(!isNaN(item.month)){
+        if(counts.find(o => o.month === item.month) === undefined){
+          counts.find(o => o.month === "0").count++
+        }  else {
+          counts.find(o => o.month === item.month).count++
+        }
+        }
     })
     fungi.groupOfDataByYear = counts
   }
