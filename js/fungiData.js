@@ -41,14 +41,15 @@ class fungiData {
     })
 
     for(var i = minYear; i <= maxYear; i++){
-      counts.push({year: i, count: 0})
+      counts.push({year: i, count: 0, fungi: []})
     }
     
     data.forEach( item => {
       if(counts.find(o => o.year === item.year) === undefined){
-        counts.push({year: item.year, count: 1})
+        counts.push({year: item.year, count: 1, fungi: [item]})
       }  else {
         counts.find(o => o.year === item.year).count++
+        counts.find(o => o.year === item.year).fungi.push(item)
       }
     })
 
@@ -125,5 +126,13 @@ class fungiData {
     })
 
     fungi.tableData = {totalRecords: _data.length, withCoords: countWithCoords, withoutCoords: countWithoutCoords, withEvent: countWithEvent, withoutEvent: countWithoutEvent}
+  }
+
+  appendSelected(){
+    let fungi = this
+
+    fungi.data.forEach(item => {
+      item.selected = true
+    })
   }
 }

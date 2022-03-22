@@ -48,7 +48,7 @@ class Table {
 
   createRow(_data){
     let table = this
-    console.log(_data)
+    
     let row = document.createElement('tr');
     let row_data_1 = document.createElement('td');
     row_data_1.innerHTML = _data.totalRecords;

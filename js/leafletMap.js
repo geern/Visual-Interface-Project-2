@@ -22,31 +22,10 @@ class LeafletMap {
     vis.theMap = L.map(vis.config.parentElement, {
       center: [30, 0],
       zoom: 2
-      //layers: [vis.base_layer]
     });
 
     vis.updateVisBackground('Jawg.Streets', 'ZbfatVMXqkwePUctq85uzb20cxPlhBZEVGXBSm8mt2glUIYxtLepu1zsX4RbOAFC', 'year')
-    //vis.updateVisBackground("Basic", vis.esriUrl, vis.esriAttr)
-
-    //if you stopped here, you would just have a map
-
-    //initialize svg for d3 to add to map
-    /*L.svg({clickable:true}).addTo(vis.theMap)// we have to make the svg layer clickable
-    vis.overlay = d3.select(vis.theMap.getPanes().overlayPane)
-    vis.svg = vis.overlay.select('svg').attr("pointer-events", "auto")*/
-
-    /*vis.colorScale = d3.scaleSequential()
-      .interpolator(d3.interpolateViridis)
-      .domain(d3.extent(vis.data, d=> parseInt(d.year)))
-    console.log(d3.extent(vis.data, d=> parseInt(d.year)))*/
-    //these are the city locations, displayed as a set of dots 
-    //vis.updateVisColor("year")
-    
-    //handler here for updating the map, as you zoom in and out           
-    /*vis.theMap.on("zoomend", function(){
-      vis.updateVis();
-    });*/
-
+    vis.setDots()
   }
 
   updateVis() {
@@ -67,12 +46,12 @@ class LeafletMap {
     vis.Dots
       .attr("cx", d => vis.theMap.latLngToLayerPoint([d.latitude,d.longitude]).x)
       .attr("cy", d => vis.theMap.latLngToLayerPoint([d.latitude,d.longitude]).y)
-      .attr("r", vis.radiusSize) ;
-
+      .attr("r", vis.radiusSize);
   }
 
   updateVisColor(_classification){
     let vis = this;
+    vis.classification = _classification
 
     if(parseInt(vis.data[0][_classification])){
       var domain = d3.extent(vis.data, d => d[_classification]);
@@ -172,16 +151,61 @@ class LeafletMap {
 
       svg.select(".legendOrdinal")
         .call(legendOrdinal);
-      console.log(svg.style('height'))
-      
     }
+  }
+
+  updateVisBackground(_name, _token, _classification){
+    let vis = this
+    vis.classification = _classification
+    vis.theMap.eachLayer(function (layer){
+      vis.theMap.removeLayer(layer)
+    })
+
+    L.tileLayer.provider(_name, {
+      accessToken: _token
+    }).addTo(vis.theMap)
+
+    L.svg({clickable:true}).addTo(vis.theMap)
+    vis.overlay = d3.select(vis.theMap.getPanes().overlayPane)
+    vis.svg = vis.overlay.select('svg').attr("pointer-events", "auto")
+
+    vis.updateVisColor(_classification)
     
-    if(typeof vis.Dots != 'undefined') vis.Dots.remove()
+    //handler here for updating the map, as you zoom in and out           
+    vis.theMap.on("zoomend", function(){
+      vis.updateVis();
+    });
+  }
+
+  updateData(_selection){
+    let vis = this
+    vis.data.forEach(fungi => {
+          fungi.selected = false
+      })
+
+    _selection.forEach(item => {
+      vis.data.forEach(fungi => {
+        if(item.id == fungi.id) {
+          fungi.selected = true
+        }
+      })
+    })
+
+    vis.updateDots()
+  }
+
+  setDots(){
+    let vis = this
+
     vis.Dots = vis.svg.selectAll('circle')
                     .data(vis.data) 
                     .join('circle')
-                        .attr("fill", d => vis.colorScale(d[_classification])) 
+                        .attr("fill", d => vis.colorScale(d[vis.classification])) 
                         .attr("stroke", "black")
+                        .attr('opacity', d => {
+                          if(d.selected) return 1
+                          return 0
+                        })
                         //Leaflet has to take control of projecting points. Here we are feeding the latitude and longitude coordinates to
                         //leaflet so that it can project them on the coordinates of the view. Notice, we have to reverse lat and lon.
                         //Finally, the returned conversion produces an x and y point. We have to select the the desired one using .x or .y
@@ -224,7 +248,7 @@ class LeafletMap {
                         .on('mouseleave', function() { //function to add mouseover event
                             d3.select(this).transition() //D3 selects the object we have moused over in order to perform operations on it
                               .duration('150') //how long we are transitioning between the two states (works like keyframes)
-                              .attr("fill", d => vis.colorScale(d[_classification])) //change the fill
+                              .attr("fill", d => vis.colorScale(d[vis.classification])) //change the fill
                               .attr('r', 3) //change radius
 
                             d3.select('#tooltip').style('opacity', 0);//turn off the tooltip
@@ -238,32 +262,27 @@ class LeafletMap {
                           });
   }
 
-  updateVisBackground(_name, _token, _classification){
+  updateDots(){
     let vis = this
-    vis.theMap.eachLayer(function (layer){
-      vis.theMap.removeLayer(layer)
+
+    var update = vis.svg.selectAll('circle').data(vis.data)
+    update.enter().append('circle')
+    update
+    .attr('opacity', d => {
+      if(d.selected) return 1
+      return 0
     })
+    .attr("fill", d => vis.colorScale(d[vis.classification])) 
+    .on('mouseleave', function() { //function to add mouseover event
+                            d3.select(this).transition() //D3 selects the object we have moused over in order to perform operations on it
+                              .duration('150') //how long we are transitioning between the two states (works like keyframes)
+                              .attr("fill", d => vis.colorScale(d[vis.classification])) //change the fill
+                              .attr('r', 3) //change radius
 
-    L.tileLayer.provider(_name, {
-      accessToken: _token
-    }).addTo(vis.theMap)
+                            d3.select('#tooltip').style('opacity', 0);//turn off the tooltip
 
-    L.svg({clickable:true}).addTo(vis.theMap)
-    vis.overlay = d3.select(vis.theMap.getPanes().overlayPane)
-    vis.svg = vis.overlay.select('svg').attr("pointer-events", "auto")
-
-    vis.updateVisColor(_classification)
-    
-    //handler here for updating the map, as you zoom in and out           
-    vis.theMap.on("zoomend", function(){
-      vis.updateVis();
-    });
-  }
-
-  renderVis() {
-    let vis = this;
-
-    //not using right now... 
- 
+                          })
+    update.transition()
+    .duration(500)
   }
 }

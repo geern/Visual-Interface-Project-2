@@ -30,6 +30,10 @@ class BarChart {
             .attr("transform",
             "translate(" + vis.config.margin.left + "," + vis.config.margin.top + ")");
 
+        
+
+        
+
         // X axis
         vis.xAxis = d3.scaleBand()
             .range([ 0, vis.width ])
@@ -129,5 +133,73 @@ class BarChart {
 
                           })
 
-    }
+        if(vis.config.parentElement == '#timeLine'){
+
+        vis.xScaleContext = d3.scaleBand()
+            .range([ 0, vis.width ])
+            .domain(vis.data.map(function(d) { return d[vis.config.xValue]; }))
+            .padding(0.2);
+
+        vis.yScaleContext = d3.scaleLinear()
+        .range([vis.config.containerHeight, 0])
+        .nice();
+
+        // Append focus group with x- and y-axes
+    vis.focus = vis.svg.append('g')
+        .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
+
+    vis.focus.append('defs').append('clipPath')
+        .attr('id', 'clip')
+      .append('rect')
+        .attr('width', vis.config.containerWidth)
+        .attr('height', vis.config.containerHeight);
+    
+    vis.focusLinePath = vis.focus.append('path')
+        .attr('class', 'chart-line');
+
+    vis.xAxisFocusG = vis.focus.append('g')
+        .attr('class', 'axis x-axis')
+        .attr('transform', `translate(0,${vis.config.containerHeight})`);
+
+    vis.yAxisFocusG = vis.focus.append('g')
+        .attr('class', 'axis y-axis');
+
+        vis.brushG = vis.svg.append('g')
+            .attr('class', 'brush x-brush');
+
+
+        // Initialize brush component
+        vis.brush = d3.brushX()
+            .extent([[0, 0], [vis.width, vis.height]])
+            .on('brush', function({selection}) {
+              if (selection) vis.brushed(selection);
+            })
+            .on('end', function({selection}) {
+              if (!selection) vis.brushed([0, vis.width]);
+            });
+
+        vis.brushG
+            .call(vis.brush)
+        }
+}
+
+    brushed(selection) {
+        let vis = this;
+
+        let low = Math.floor(selection[0]/(vis.width/vis.data.length))
+        let high = Math.ceil(selection[1]/(vis.width/vis.data.length))
+        let list = []
+
+        let extent = vis.data.map(function(d) { return d[vis.config.xValue]; })
+        vis.data.forEach(item => {
+            if(item.year > extent[low] && item.year < extent[high-1]){
+                item.fungi.forEach(fungi => {
+                    list.push(fungi)
+                })
+            }
+        })
+
+        vis.selectedFungi = list
+        leafletMap.updateData(vis.selectedFungi)
+  }
 }

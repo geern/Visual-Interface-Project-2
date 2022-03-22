@@ -19,6 +19,7 @@ Promise.all([
       fungusData = new fungiData(data)
       fungusData.parseData()
       fungusData.countDataByYear()
+      fungusData.appendSelected()
 
       var width = document.getElementById("timeLine").clientWidth
       var height = document.getElementById("timeLine").clientHeight
@@ -92,6 +93,7 @@ Promise.all([
 
 function updateMapDots(_classification){
   leafletMap.updateVisColor(_classification)
+  leafletMap.updateDots()
 }
 
 function updateMapBackground(_selection){
