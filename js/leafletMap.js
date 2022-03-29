@@ -175,6 +175,8 @@ class LeafletMap {
     vis.theMap.on("zoomend", function(){
       vis.updateVis();
     });
+
+    vis.setDots()
   }
 
   updateData(_selection){
