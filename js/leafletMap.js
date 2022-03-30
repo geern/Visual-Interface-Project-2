@@ -214,6 +214,7 @@ class LeafletMap {
                         .attr("cx", d => vis.theMap.latLngToLayerPoint([d.latitude,d.longitude]).x)
                         .attr("cy", d => vis.theMap.latLngToLayerPoint([d.latitude,d.longitude]).y) 
                         .attr("r", 3)
+                        .style('z-index', 1000)
                         .on('mouseover', function(event,d) { //function to add mouseover event
                             d3.select(this).transition() //D3 selects the object we have moused over in order to perform operations on it
                               .duration('150') //how long we are transitioning between the two states (works like keyframes)
@@ -229,7 +230,9 @@ class LeafletMap {
                               stringReturn += `<li>Classification: ${d.class}</li>`
                               stringReturn += `<li>Habitat: ${d.habitat}</li>`
                               stringReturn += `<li>Substrate: ${d.substrate}</li>`
-                              stringReturn += `<li>Link: ${d.references}</li>`
+                              if(d.references != ''){
+                                stringReturn += `<li>Click on dot to go to Link: ${d.references}</li>`
+                              }
                               stringReturn += `</ul>`
                               return stringReturn
                             }
@@ -257,10 +260,9 @@ class LeafletMap {
 
                           })
                         .on('click', (event, d) => { //experimental feature I was trying- click on point and then fly to it
-                           // vis.newZoom = vis.theMap.getZoom()+2;
-                           // if( vis.newZoom > 18)
-                           //  vis.newZoom = 18; 
-                           // vis.theMap.flyTo([d.latitude, d.longitude], vis.newZoom);
+                            if(d.references != ''){
+                              window.open(d.references)
+                            }
                           });
   }
 
