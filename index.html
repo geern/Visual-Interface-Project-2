@@ -23,25 +23,25 @@
         </div> 
         <div id="my-map"></div>
         <div style="height: 10vh; width: 100%;"id="mapLegend"></div>
+        <div id="tableContent" style="text-align: center;display: block;margin: auto;"></div>
         <div class="container"></div>
         <svg style="height: 25%; width: 100%;" id="timeLine"></svg>
-        <svg style="height: 25%; width: 100%;" id="sampleByYear"></svg>
-        <svg style="height: 25%; width: 100%;" id="sampleByPhylum"></svg>
-        <svg style="height: 25%; width: 100%;" id="sampleByCollector"></svg>
         <div style="float:left; width: 100%; height: 10%">
             <label style="text-align: center;display: block;margin: auto;" id="SliderLabel">Current Selected Year: 2017</label>
             <input style="display: block;margin: auto;" type="range" min="1859" max="2017" value="2017" class="slider" id="YearSlider">
         </div> 
+        <svg style="height: 25%; width: 100%;" id="sampleByYear"></svg>
+        <svg style="height: 25%; width: 50%;float: left" id="sampleByPhylum"></svg>
+        <svg style="height: 25%; width: 50%;float: left" id="sampleByCollector"></svg>
+        
     </div>
-    
+    <div id="tooltip"></div>
+
     <script src="js/d3.v6.min.js"></script>
     <script src="js/leaflet.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.js"></script>
-
     <script src="http://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="js/leaflet-providers.js"></script>
-
     <script src="js/main.js"></script>
     <script src="js/leafletMap.js"></script>
     <script src="js/fungiData.js"></script>
@@ -49,9 +49,5 @@
     <script src="js/table.js"></script>
 
     
-
-    <div id="tooltip"></div>
-
-
 </body>
 </html>

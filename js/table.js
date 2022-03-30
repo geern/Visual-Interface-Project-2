@@ -13,15 +13,10 @@ class Table {
     table.table.appendChild(table.tbody);
 
     // Adding the entire table to the body tag
-    document.getElementById('mainContent').appendChild(table.table);
-    // Creating and adding data to first row of the table
-    
+    document.getElementById('tableContent').appendChild(table.table);
 
     table.createHeader()
     table.createRow(_data)
-
-    // Creating and adding data to second row of the table
-    
   }
 
   createHeader(){

@@ -51,10 +51,17 @@ Promise.all([
       }, 
       fungusData.countsByYear);
 
-      fungusData.getDataByYear(1900)
+      fungusData.getDataforTable(fungusData.data)
+      table = new Table()
+      table.createTable(fungusData.tableData)
+
+      var width = document.getElementById("sampleByYear").clientWidth
+      var height = document.getElementById("sampleByYear").clientHeight
+
+      fungusData.getDataByYear(2017)
       sampledByYear = new BarChart({ 
         parentElement: '#sampleByYear', 
-        title:"Samples from " + 1900,
+        title:"Samples from " + 2017,
         containerWidth: width,
         containerHeight: height,
         xLabel: "Month of the Year",
@@ -65,6 +72,9 @@ Promise.all([
       fungusData.groupOfDataByYear);
 
       fungusData.getCountByCategory("phylum")
+
+      var width = document.getElementById("sampleByPhylum").clientWidth
+      var height = document.getElementById("sampleByPhylum").clientHeight
 
       sampledByPhylum = new BarChart({ 
         parentElement: '#sampleByPhylum', 
@@ -81,6 +91,9 @@ Promise.all([
 
       fungusData.getCountByCategory("recordedBy")
 
+      var width = document.getElementById("sampleByCollector").clientWidth
+      var height = document.getElementById("sampleByCollector").clientHeight
+
       sampledByCollector = new BarChart({ 
         parentElement: '#sampleByCollector', 
         title:"Samples Grouped By Collector",
@@ -94,9 +107,7 @@ Promise.all([
       }, 
       fungusData.groupedDataByrecordedBy.slice(0,10));
 
-      fungusData.getDataforTable(fungusData.data)
-      table = new Table()
-      table.createTable(fungusData.tableData)
+      
 
       //adding map background options
       mapBackground.forEach(function (item, index){
