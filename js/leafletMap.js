@@ -184,7 +184,7 @@ class LeafletMap {
     vis.data.forEach(fungi => {
         fungi.selected = false
     })
-
+    
     _selection.forEach(item => {
       vis.data.forEach(fungi => {
         if(item.id == fungi.id) {

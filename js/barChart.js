@@ -28,20 +28,7 @@ class BarChart {
             .attr("height", vis.height + vis.config.margin.top + vis.config.margin.bottom)
             .append("g")
             .attr("transform",
-            "translate(" + vis.config.margin.left + "," + vis.config.margin.top + ")");        
-
-        // X axis
-        /*vis.xScale = d3.scaleBand()
-            .range([ 0, vis.width ])
-            .domain(vis.data.map(function(d) { return d[vis.config.xValue]; }))
-            .padding(0.2);
-
-        vis.svg.append("g")
-            .attr("transform", "translate(0," + vis.height + ")")
-            .call(d3.axisBottom(vis.xScale))
-            .selectAll("text")
-            .attr("transform", "translate(-10,2)rotate(-65)")
-            .style("text-anchor", "end");*/
+            "translate(" + vis.config.margin.left + "," + vis.config.margin.top + ")");
 
         vis.xScale = d3.scaleBand()
             .range([ 0, vis.width ])
@@ -99,28 +86,30 @@ class BarChart {
         .nice();
 
         // Append focus group with x- and y-axes
-    vis.focus = vis.svg.append('g')
-        .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
-    vis.focus.append('defs').append('clipPath')
-        .attr('id', 'clip')
-      .append('rect')
-        .attr('width', vis.config.containerWidth)
-        .attr('height', vis.config.containerHeight);
-    
-    vis.focusLinePath = vis.focus.append('path')
-        .attr('class', 'chart-line');
+        vis.focus = vis.svg.append('g')
+            .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
-    vis.xAxisFocusG = vis.focus.append('g')
-        .attr('class', 'axis x-axis')
-        .attr('transform', `translate(0,${vis.config.containerHeight})`);
+        vis.focus.append('defs').append('clipPath')
+            .attr('id', 'clip')
+          .append('rect')
+            .attr('width', vis.config.containerWidth)
+            .attr('height', vis.config.containerHeight);
+        
+        vis.focusLinePath = vis.focus.append('path')
+            .attr('class', 'chart-line');
 
-    vis.yAxisFocusG = vis.focus.append('g')
-        .attr('class', 'axis y-axis');
+        vis.xAxisFocusG = vis.focus.append('g')
+            .attr('class', 'axis x-axis')
+            .attr('transform', `translate(0,${vis.config.containerHeight})`);
+
+        vis.yAxisFocusG = vis.focus.append('g')
+            .attr('class', 'axis y-axis');
 
         vis.brushG = vis.svg.append('g')
             .attr('class', 'brush x-brush');
 
+        d3.selectAll('.brush').style('display', 'none');
 
         // Initialize brush component
         vis.brush = d3.brushX()
@@ -129,7 +118,7 @@ class BarChart {
               if (selection) vis.brushed(selection);
             })
             .on('end', function({selection}) {
-              if (!selection && vis.config.parentElement == '#sampleByYear') updateFromYearBrush(timeLine.selectedFungi)
+              if (!selection && vis.config.parentElement == '#sampleByYear') timeLine.brushed([0, timeLine.width])
               else if (!selection) vis.brushed([0, vis.width]);
             });
 
@@ -198,7 +187,12 @@ class BarChart {
 
             })
             .on('click', function(event, d){
-                console.log(d)
+                if(d.year){
+                    let e = document.getElementById("YearSlider")
+                    e.value = d.year
+                    e.onchange()
+                    e.oninput()
+                }
             })
 
         

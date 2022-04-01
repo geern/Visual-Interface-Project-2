@@ -24,6 +24,18 @@ document.getElementById("YearSlider").onchange = function(){
   timeLine.yearHighlight(parseInt(e.value))
 }
 
+function checkKeyDown(e){
+  if(e.keyCode == 16){
+    d3.selectAll('.brush').raise()
+  }
+}
+
+function checkKeyUp(e){
+  if(e.keyCode == 16){
+    d3.selectAll('.brush').lower()
+  }
+}
+
 Promise.all([
   d3.csv('data/occurrences.csv'),
   d3.csv('data/mapBackground.csv')
@@ -107,7 +119,7 @@ Promise.all([
         yValue: "count",
         margin: {top: 30, right: 100, bottom: 120, left: 100}
       }, 
-      fungusData.groupedDataByrecordedBy.slice(0,10));
+      fungusData.groupedDataByrecordedBy.slice(0,5));
 
       
 
