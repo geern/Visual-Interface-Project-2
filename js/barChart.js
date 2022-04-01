@@ -132,7 +132,7 @@ class BarChart {
             .attr("y", function(d) { return vis.yScale(d[vis.config.yValue]); })
             .attr("width", vis.xScale.bandwidth())
             .attr("height", function(d) { return vis.height - vis.yScale(d[vis.config.yValue]); })
-            .attr("fill", "#69b3a2")
+            .attr("fill", "#FF6D8D")
 
         //createing area for hovering years to display data
         vis.svg.selectAll(".barHighlight")
@@ -150,8 +150,8 @@ class BarChart {
             .on('mouseover', function(event,d) { //function to add mouseover event
                 d3.select(this).transition() //D3 selects the object we have moused over in order to perform operations on it
                   .duration('150') //how long we are transitioning between the two states (works like keyframes)
-                  .attr("fill", "yellow") //change the fill
-                  .style('opacity', 0.25)
+                  .attr("fill", "#FFEF99") //change the fill
+                  .style('opacity', 0.5)
                 var html = () => {
                   var stringReturn = ``
                   stringReturn += `<div class="tooltip-label" "></div>`
