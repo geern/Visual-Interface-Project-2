@@ -188,6 +188,6 @@ function updateFromBrush(_selection){
   fungusData.getCountByCategory("recordedBy")
   fungusData.getDataforTable(fungiData.data)
   sampledByPhylum.updateVis(fungusData.groupedDataByphylum)
-  sampledByCollector.updateVis(fungusData.groupedDataByrecordedBy.slice(0,10))
+  sampledByCollector.updateVis(fungusData.groupedDataByrecordedBy.slice(0,5))
   table.updateTable(fungusData.tableData)
 }
