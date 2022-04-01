@@ -160,6 +160,7 @@ class BarChart {
             .attr("height", function(d) { return vis.height})
             .attr("fill", "white")
             .attr("class", "barHighlight")
+            .attr("id", (d) => {return "barHighlight" + d.year})
             .style('opacity', 0)
             .on('mouseover', function(event,d) { //function to add mouseover event
                 d3.select(this).transition() //D3 selects the object we have moused over in order to perform operations on it
@@ -277,5 +278,15 @@ class BarChart {
             vis.selectedFungi = list
             updateFromBrush(vis.selectedFungi)
         }
-  }
+    }
+
+    yearHighlight(_selectedYear){
+        let vis = this;
+        d3.selectAll(".barHighlight")//how long we are transitioning between the two states (works like keyframes)
+            .attr("fill", "white") //change the fill
+            .style('opacity', 0)
+        d3.select("#barHighlight" + _selectedYear)
+            .attr("fill", "yellow") //change the fill
+            .style('opacity', 0.25)
+    }
 }

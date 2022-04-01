@@ -12,6 +12,7 @@ document.getElementById("YearSlider").oninput = function(){
   var e = document.getElementById("YearSlider")
   var label = document.getElementById("SliderLabel")
   label.innerHTML = "Current Selected Year: " + e.value
+  timeLine.yearHighlight(parseInt(e.value))
 }
 
 //on slider change, updates all charts
@@ -20,6 +21,7 @@ document.getElementById("YearSlider").onchange = function(){
   fungusData.getDataByYear(parseInt(e.value))
 
   sampledByYear.updateVis(fungusData.groupOfDataByYear, "Samples from " + e.value)
+  timeLine.yearHighlight(parseInt(e.value))
 }
 
 Promise.all([
@@ -115,6 +117,8 @@ Promise.all([
       })
       
       leafletMap = new LeafletMap({ parentElement: 'my-map'}, fungusData.data);
+
+      document.getElementById("YearSlider").onchange()
 })
 
 function setSliderFromBrush(_range){
@@ -125,6 +129,8 @@ function setSliderFromBrush(_range){
   slider.max = _range[1]
   slider.value = _range[0]
   slider.onchange()
+  document.getElementById("LeftSliderLabel").innerHTML = slider.min
+  document.getElementById("RightSliderLabel").innerHTML = slider.max
 }
 
 function updateMapDots(_classification){
