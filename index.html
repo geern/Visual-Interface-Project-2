@@ -7,13 +7,17 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body onkeydown="checkKeyDown(event)" onkeyup="checkKeyUp(event)" style="background-color:#E2CAB5; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif">
-    <
     <div id="header">
         <h1 style="text-align: center; width: 100%;">Project 2: Funky Fungi</h1>
         <h2>Christopher Butts, Kevin Eaton, Raymond Gee</h2>
         <div class="source">
             Source: Data from <a href="https://www.mycoportal.org/portal/collections/misc/collprofiles.php?collid=70/" target="_blank" rel="noopener noreferrer">University of Cincinnati, Margaret H. Fulford Herbarium - Fungi (CINC)</a>
         </div> 
+    </div>
+    <div style="top: 60px;right: 0;background: black; position: absolute; width: 100px; height: 100px; overflow: none;  z-index: 99;">
+        <a href="http://www.chinaexpressinparma.com/">
+            <img style="max-height: 100%;max-width: 100%;"src="data/ChinaExpressLogo.png">
+        </a>
     </div>
     <div id="mainContent" style="height: 100vh; width: 98.5vw;">
         <div style="float: left;width:50%;height:5%;">
@@ -41,9 +45,8 @@
             <label style="width:25%; float:left;display: block; font-size: 25px;" id="RightSliderLabel">2017</label>
         </div> 
         <svg style="height: 25%; width: 100%;" id="sampleByYear"></svg>
-        <svg style="height: 25%; width: 50%;float: left" id="sampleByPhylum"></svg>
-        <svg style="height: 25%; width: 50%;float: left" id="sampleByCollector"></svg>
-        
+        <svg style="height: 35%; width: 50%;float: left" id="sampleByPhylum"></svg>
+        <svg style="height: 35%; width: 50%;float: left" id="sampleByCollector"></svg>
     </div>
     <div id="tooltip"></div>
 
