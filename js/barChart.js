@@ -109,8 +109,6 @@ class BarChart {
         vis.brushG = vis.svg.append('g')
             .attr('class', 'brush x-brush');
 
-        d3.selectAll('.brush').style('display', 'none');
-
         // Initialize brush component
         vis.brush = d3.brushX()
             .extent([[0, 0], [vis.width, vis.height]])
@@ -122,9 +120,7 @@ class BarChart {
               else if (!selection) vis.brushed([0, vis.width]);
             });
 
-        vis.brushG
-            .call(vis.brush)
-        }
+        vis.brushG.call(vis.brush)}
 
         // Bars
         vis.svg.selectAll(".bar")
