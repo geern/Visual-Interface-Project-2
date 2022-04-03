@@ -113,11 +113,15 @@ class BarChart {
         vis.brush = d3.brushX()
             .extent([[0, 0], [vis.width, vis.height]])
             .on('brush', function({selection}) {
+                vis.selection = selection
               if (selection) vis.brushed(selection);
             })
             .on('end', function({selection}) {
-              if (!selection && vis.config.parentElement == '#sampleByYear') timeLine.brushed([0, timeLine.width])
-              else if (!selection) vis.brushed([0, vis.width]);
+              if (!selection && vis.config.parentElement == '#sampleByYear') timeLine.brushed(timeLine.selection)
+              else if (!selection) {
+                  vis.selection = [0, vis.width]
+                  vis.brushed([0, vis.width]);
+                }
             });
 
         vis.brushG.call(vis.brush)}
